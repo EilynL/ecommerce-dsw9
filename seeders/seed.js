@@ -26,5 +26,5 @@ async function seed() {
 }
 seed();
 
-node seeders/seed.js
-# Debe mostrar: 5 productos insertados.
+//node seeders/seed.js
+//# Debe mostrar: 5 productos insertados.
