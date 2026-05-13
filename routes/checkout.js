@@ -1,8 +1,3 @@
-/*const express = require('express');
-const router  = express.Router();
-// Rutas por implementar
-module.exports = router;*/
-
 // routes/checkout.js
 const express = require('express');
 const router  = express.Router();
