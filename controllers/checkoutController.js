@@ -9,7 +9,8 @@ const PAYPAL_BASE = process.env.PAYPAL_MODE === 'live'
 // ── Obtiene un token de acceso de la API de PayPal ───────────────
 async function getPayPalAccessToken() {
   const credentials = Buffer
-    .from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`)
+    .from(`AXdV1hfTQLaaV1COOUuMP9kmDb-EDMKW7jEAo__wO2YsZPkSWh1Tk9a2OWmoY64c6vC3eW5sArig_Ew2:EBlGD-9oCipkCA5XYRZy10GVJTP6D4ZVyj-4SimiKr59AkHsV51OUIpAxBJkQoMLzGfwpBy8pqwrgQyH`)
+    // .from(`${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`)
     .toString('base64');
   const res = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
     method: 'POST',
@@ -56,7 +57,7 @@ const checkoutController = {
       res.render('payment', {
         title: 'Procesar Pago',
         order,
-        paypalClientId: process.env.PAYPAL_CLIENT_ID
+        paypalClientId: 'AXdV1hfTQLaaV1COOUuMP9kmDb-EDMKW7jEAo__wO2YsZPkSWh1Tk9a2OWmoY64c6vC3eW5sArig_Ew2' // process.env.PAYPAL_CLIENT_ID
       });
     } catch (err) {
       res.status(500).render('error', { title: 'Error', message: 'Error al procesar el pedido.' });
