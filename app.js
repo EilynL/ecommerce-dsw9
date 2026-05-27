@@ -1,4 +1,3 @@
-// app.js — reemplaza el Hello World
 require('dotenv').config();
 const express      = require('express');
 const path         = require('path');
@@ -11,6 +10,12 @@ const { Product, Order, OrderItem } = require('./models');
 const productRoutes  = require('./routes/products');
 const cartRoutes     = require('./routes/cart');
 const checkoutRoutes = require('./routes/checkout');
+const storeAuthRoutes = require('./routes/storeAuth');
+const userAuthRoutes = require('./routes/userAuth');
+const { attachLocals } = require('./middleware/authMiddleware');
+const storeAdminRoutes = require('./routes/storeAdmin');
+const customerRoutes = require('./routes/customer');
+
 
 const app  = express();
 const port = process.env.PORT || 3000;
@@ -30,7 +35,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: { maxAge: 3600000 }
 }));
-// Middleware: carrito vacio en sesion si no existe
+app.use(attachLocals);
+
 app.use((req, res, next) => {
   if (!req.session.cart) {
     req.session.cart = { items: [], totalQty: 0, totalPrice: 0 };
@@ -38,18 +44,20 @@ app.use((req, res, next) => {
   res.locals.cartItemCount = req.session.cart.totalQty || 0;
   next();
 });
-/*
-app.get('/', (req, res) => {
-  res.send(`
-    Hello World - Eilyn Lee
-    La aplicacion funciona en Render.
-    Puerto: ${port} | Entorno: ${process.env.NODE_ENV || 'development'}
-  `);
-});
-*/
+
 app.use('/',         productRoutes);
 app.use('/cart',     cartRoutes);
 app.use('/checkout', checkoutRoutes);
+app.use('/store', storeAuthRoutes);
+app.use('/user', userAuthRoutes);
+app.use('/store-admin', storeAdminRoutes);
+app.use('/customer', customerRoutes);
+
+app.use(['/store/login', '/store/register',
+         '/user/login',  '/user/register',
+         '/store-admin', '/customer'],
+  (req, res, next) => { res.locals.layout = false; next(); }
+);
 
 app.use((req, res) => {
   res.status(404).render('404', { title: 'Pagina no encontrada' });
@@ -59,10 +67,10 @@ sequelize.sync()
   .then(() => {
     console.log('Base de datos sincronizada');
     app.listen(port, () => {
-      console.log(`Servidor en http://localhost:${port}`);
+      console.log('Servidor en http://localhost:${port}');
     });
   })
   .catch(err => {
     console.error('Error al sincronizar BD:', err.message);
     process.exit(1);
-  });
+  })
