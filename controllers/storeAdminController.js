@@ -1,5 +1,3 @@
-
-
 // controllers/storeAdminController.js  (1/3) — Dashboard y listado
 const { Store, Product, Order, OrderItem } = require('../models');
 const { Op } = require('sequelize');
